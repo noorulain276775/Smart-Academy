@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.db.models import Avg, Count
-from .models import Course, Lesson, Teacher, Student, Rating, CourseMaterial
+from .models import Course, Teacher, Student, Rating
 
 
 """
@@ -88,3 +88,40 @@ def teachers_with_top_students(request):
 
 
 
+"""
+Create an API view that returns a list of all courses along with:
+
+    Course title
+    Course teacher name
+    Average student rating (from a related Rating model)
+    Total number of enrolled students
+Output Should be liked:
+[
+  {
+    "Course Title": "Python Basics",
+    "Teacher": "Mr. Ahmed",
+    "Average Rating": 4.5,
+    "Total Enrolled Students": 12
+  },
+  {
+    "Course Title": "Django Advanced",
+    "Teacher": "Ms. Noor",
+    "Average Rating": 4.9,
+    "Total Enrolled Students": 18
+  }
+]
+
+"""
+
+def course_stats(request):
+    stats = Course.objects.select_related('teacher').annotate(avg_rating = Avg('rating__rating'), student_count = Count('students', distinct=True))
+    result = []
+    for stat in stats:
+        result.append({
+            "Course Title": stat.title,
+            'Teacher': stat.teacher.name,
+            "Average Rating": stat.avg_rating or 0,
+            "Total Enrolled Students": stat.student_count
+        })
+
+    return JsonResponse(result, safe=False)
