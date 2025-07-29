@@ -1,4 +1,4 @@
-# Smart Academy – Django ORM Optimization Playground
+# Smart Academy – Django ORM Complex Queries Optimization Playground
 
 Smart Academy is a lightweight Django project built to simulate an educational platform with a focus on **query optimization** using Django ORM. It serves as a practice ground to write clean, efficient, and scalable database queries.
 
