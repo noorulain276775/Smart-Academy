@@ -45,7 +45,7 @@ The app is modeled around an online learning platform with:
 ## Setup Instructions
 
 ```bash
-git clone https://github.com/yourusername/smart-academy-django.git
+git clone https://github.com/noorulain276775/Smart-Academy.git
 cd smart-academy-django
 
 
