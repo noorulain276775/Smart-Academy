@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.db.models import OuterRef, Subquery
 from django.db.models import Avg, Count
 from .models import Course, Teacher, Student, Rating
 
@@ -122,6 +123,78 @@ def course_stats(request):
             'Teacher': stat.teacher.name,
             "Average Rating": stat.avg_rating or 0,
             "Total Enrolled Students": stat.student_count
+        })
+
+    return JsonResponse(result, safe=False)
+
+"""
+Latest Rating Per Course by Any Student
+Goal: Return a list of courses, each with:
+  Course title
+  Teacher name
+  The most recent rating value (if any)
+
+Example:
+[
+  {
+    "Course Title": "Python Basics",
+    "Teacher": "Ali Raza",
+    "Latest Rating": 4.0
+  },
+  {
+    "Course Title": "Django Mastery",
+    "Teacher": "Noor",
+    "Latest Rating": 5.0
+  }
+]
+
+"""
+
+def course_latest_summary(request):
+    result = []
+    latest_rating = Rating.objects.filter(course=OuterRef('pk')).order_by('-id') 
+    courses = Course.objects.select_related('teacher').annotate(latest_rating = Subquery(latest_rating.values('rating')[:1]))
+    for course in courses:
+        result.append({
+            "Course Title": course.title,
+            "Teacher": course.teacher.name,
+            "Latest Rating": course.latest_rating
+        })
+    return JsonResponse(result, safe=False)
+
+
+"""
+Average Rating per Teacher Across All Their Courses
+For each teacher, return:
+  Teacher name
+  Total number of courses they've taught
+  Average rating (based on all ratings across all their courses)
+
+Example Output:
+
+[
+  {
+    "Teacher": "Noor",
+    "Total Courses": 3,
+    "Average Rating": 4.67
+  },
+  {
+    "Teacher": "Ali Raza",
+    "Total Courses": 2,
+    "Average Rating": 4.25
+  }
+]
+"""
+
+def average_rating_per_teacher(request):
+    result = []
+    teacher_ratings= Teacher.objects.annotate(total_course = Count('course'), average_rating= Avg('course__rating__rating'))
+    for teacher in teacher_ratings:
+        result.append({
+            "Teacher": teacher.name,
+            "Total Course": teacher.total_course,
+            "Average Rating": round(teacher.average_rating or 0, 2)
+
         })
 
     return JsonResponse(result, safe=False)
