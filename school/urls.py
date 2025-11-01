@@ -6,7 +6,8 @@ from .views import (
     course_stats,
     course_latest_summary,
     average_rating_per_teacher,
-    topTwoCoursesOfEachTeacher
+    topTwoCoursesOfEachTeacher,
+    latestRatingwithStudentName
 )
 
 urlpatterns = [
@@ -16,5 +17,6 @@ urlpatterns = [
     path("course-stats/", course_stats),
     path("course-latest/", course_latest_summary),
     path("teacher-rating/", average_rating_per_teacher),
-    path('top-teacher-courses/', topTwoCoursesOfEachTeacher)
+    path('top-teacher-courses/', topTwoCoursesOfEachTeacher),
+    path('latest_rating/', latestRatingwithStudentName),
 ]

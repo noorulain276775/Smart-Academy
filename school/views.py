@@ -291,3 +291,12 @@ def topTwoCoursesOfEachTeacher(request):
 For each course, find the latest rating (based on id) and the student name who gave that rating.
 
 """
+
+
+def latestRatingwithStudentName(request):
+    latest_rating = Rating.objects.filter(course=OuterRef("pk")).order_by("-id")
+    qs = Course.objects.annotate(
+        latest_rating=Subquery(latest_rating.values("rating")[:1]),
+        latest_student=Subquery(latest_rating.values("student__name")[:1]),
+    ).values("id", "title", "latest_rating", "latest_student")
+    return JsonResponse(list(qs), safe=False)
