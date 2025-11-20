@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Count
 
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
@@ -8,9 +9,17 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
 
+class CourseQuerySet(models.QuerySet):
+    def with_rating_stats(self):
+        return self.annotate(
+            reviews_count=Count("rating"),
+            avg_rating=Avg("rating__rating"),
+        )
+
 class Course(models.Model):
+    objects = CourseQuerySet.as_manager()
     title = models.CharField(max_length=100)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE) 
     students = models.ManyToManyField(Student, related_name='courses')
     price = models.DecimalField(max_digits=6, decimal_places=2)
 

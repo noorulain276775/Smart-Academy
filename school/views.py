@@ -257,6 +257,7 @@ def topTwoCoursesOfEachTeacher(request):
         .values("teacher_id", "teacher__name", "title", "student_count", "row_number")
         .order_by("teacher_id", "row_number")
     )
+    print(top_courses)
 
     result = []
     current_teacher = None
