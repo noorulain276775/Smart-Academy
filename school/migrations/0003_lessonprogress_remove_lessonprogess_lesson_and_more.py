@@ -7,72 +7,116 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('school', '0002_tag_alter_rating_course_certificate_coursecompletion_and_more'),
+        (
+            "school",
+            "0002_tag_alter_rating_course_certificate_coursecompletion_and_more",
+        ),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LessonProgress',
+            name="LessonProgress",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('watched_percentage', models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "watched_percentage",
+                    models.IntegerField(
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ]
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='lessonprogess',
-            name='lesson',
+            model_name="lessonprogess",
+            name="lesson",
         ),
         migrations.RemoveField(
-            model_name='lessonprogess',
-            name='student',
+            model_name="lessonprogess",
+            name="student",
         ),
         migrations.AddField(
-            model_name='rating',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="rating",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='enrollment',
-            name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='enrollments', to='school.course'),
+            model_name="enrollment",
+            name="course",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="enrollments",
+                to="school.course",
+            ),
         ),
         migrations.AlterField(
-            model_name='enrollment',
-            name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='enrollments', to='school.student'),
+            model_name="enrollment",
+            name="student",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="enrollments",
+                to="school.student",
+            ),
         ),
         migrations.AlterField(
-            model_name='rating',
-            name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ratings', to='school.student'),
+            model_name="rating",
+            name="student",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="ratings",
+                to="school.student",
+            ),
         ),
         migrations.AlterField(
-            model_name='wallet',
-            name='student',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='wallet', to='school.student'),
+            model_name="wallet",
+            name="student",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="wallet",
+                to="school.student",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='enrollment',
-            constraint=models.UniqueConstraint(fields=('student', 'course'), name='unique_student_course_enrollment'),
+            model_name="enrollment",
+            constraint=models.UniqueConstraint(
+                fields=("student", "course"), name="unique_student_course_enrollment"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='rating',
-            constraint=models.UniqueConstraint(fields=('student', 'course'), name='unique_student_course_rating'),
+            model_name="rating",
+            constraint=models.UniqueConstraint(
+                fields=("student", "course"), name="unique_student_course_rating"
+            ),
         ),
         migrations.AddField(
-            model_name='lessonprogress',
-            name='lesson',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.lesson'),
+            model_name="lessonprogress",
+            name="lesson",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="school.lesson"
+            ),
         ),
         migrations.AddField(
-            model_name='lessonprogress',
-            name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.student'),
+            model_name="lessonprogress",
+            name="student",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="school.student"
+            ),
         ),
         migrations.DeleteModel(
-            name='LessonProgess',
+            name="LessonProgess",
         ),
     ]

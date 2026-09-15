@@ -1,0 +1,17 @@
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["EXE002"]
+
+exclude = [
+    "*/migrations/*",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88

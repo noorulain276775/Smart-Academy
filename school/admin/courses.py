@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import Avg, Count
 
 from ..models import Course, Teacher
 
@@ -16,6 +15,7 @@ class TeacherNameFilter(admin.SimpleListFilter):
         if self.value():
             return queryset.filter(teacher__id=self.value())
         return queryset
+
 
 class ReviewsCountFilter(admin.SimpleListFilter):
     title = "Reviews"
@@ -40,10 +40,7 @@ class CoursesAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return (
-            super()
-            .get_queryset(request)
-            .with_rating_stats()
-            .select_related("teacher")
+            super().get_queryset(request).with_rating_stats().select_related("teacher")
         )
 
     def avg_rating_display(self, obj):

@@ -7,16 +7,18 @@ on:
     branches: ["main"]
 
 jobs:
-  test:
+  quality:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -25,9 +27,34 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install black isort ruff bandit coverage
+
+      # Django checks
+      - name: Django system check
+        run: python manage.py check
+
+      - name: Verify migrations are committed
+        run: python manage.py makemigrations --check --dry-run
 
       - name: Run migrations
         run: python manage.py migrate --noinput
 
-      - name: Run tests
-        run: python manage.py test
+      # Code quality
+      - name: Ruff lint
+        run: ruff check .
+
+      - name: Black formatting
+        run: black --check .
+
+      - name: Import sorting
+        run: isort . --check-only
+
+      # Security
+      - name: Bandit security scan
+        run: bandit -r . -x tests
+
+      # Tests
+      - name: Run tests with coverage
+        run: |
+          coverage run manage.py test
+          coverage report --fail-under=80
