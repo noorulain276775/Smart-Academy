@@ -12,8 +12,8 @@ class Student(models.Model):
 class CourseQuerySet(models.QuerySet):
     def with_rating_stats(self):
         return self.annotate(
-            reviews_count=Count("rating"),
-            avg_rating=Avg("rating__rating"),
+            reviews_count=Count("ratings"),
+            avg_rating=Avg("ratings__rating"),
         )
 
 class Course(models.Model):
@@ -34,7 +34,7 @@ class CourseMaterial(models.Model):
     link = models.URLField()
 
 class Rating(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField()
     comment = models.TextField()
