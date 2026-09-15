@@ -15,7 +15,7 @@ The response should include the course title and its average rating.
 
 def top_courses_with_average_rating(request):
     top_courses = Course.objects.annotate(
-        reviews_count=Count("rating"), avg_rating=Avg("rating__rating")
+        reviews_count=Count("ratings"), avg_rating=Avg("ratings__rating")
     ).filter(reviews_count__gte=2, avg_rating__gt=3.5)
     result = []
     for course in top_courses:
