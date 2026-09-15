@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import Avg, Count
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
@@ -22,8 +24,8 @@ class Tag(models.Model):
 class Course(models.Model):
     objects = CourseQuerySet.as_manager()
     title = models.CharField(max_length=100)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE) 
-    students = models.ManyToManyField(Student, related_name='courses')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    students = models.ManyToManyField(Student,related_name="courses")
     price = models.DecimalField(max_digits=6, decimal_places=2)
     tags = models.ManyToManyField(Tag, blank=True)
 
@@ -40,6 +42,13 @@ class Enrollment(models.Model):
         related_name="enrollments"
     )
     enrolled_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student", "course"],
+                name="unique_student_course_enrollment"
+            )
+        ]
 
 class Lesson(models.Model):
     title = models.CharField(max_length=100)
@@ -53,9 +62,17 @@ class CourseMaterial(models.Model):
 
 class Rating(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="ratings")
     rating = models.PositiveIntegerField()
     comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student", "course"],
+                name="unique_student_course_rating"
+            )
+        ]
 
 class CourseCompletion(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -84,4 +101,9 @@ class Wallet(models.Model):
 class LessonProgress(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    watched_percentage = models.IntegerField()
+    watched_percentage = models.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100)
+        ]
+    )
