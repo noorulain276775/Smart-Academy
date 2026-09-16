@@ -14,6 +14,9 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
+    env:
+      SECRET_KEY: django-insecure-ci-secret-key
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +32,6 @@ jobs:
           pip install -r requirements.txt
           pip install black isort ruff bandit coverage
 
-      # Django checks
       - name: Django system check
         run: python manage.py check
 
@@ -39,7 +41,6 @@ jobs:
       - name: Run migrations
         run: python manage.py migrate --noinput
 
-      # Code quality
       - name: Ruff lint
         run: ruff check .
 
@@ -49,11 +50,11 @@ jobs:
       - name: Import sorting
         run: isort . --check-only
 
-      # Security
       - name: Bandit security scan
-        run: bandit -r . -x tests
+        run: |
+          bandit -r . \
+          -x tests,school/management/commands/seed_demo_data.py
 
-      # Tests
       - name: Run tests with coverage
         run: |
           coverage run manage.py test

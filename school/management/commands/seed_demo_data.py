@@ -124,7 +124,7 @@ class Command(BaseCommand):
         students = []
         for idx, name in enumerate(STUDENT_NAMES, start=1):
             slug = slugify(name)
-            domain = random.choice(EMAIL_DOMAINS)
+            domain = random.choice(EMAIL_DOMAINS)  # nosec B311
             students.append(
                 Student(
                     name=name,
