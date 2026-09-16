@@ -5,19 +5,18 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import slugify
 
-from school.models import (
-    Course,
-    CourseMaterial,
-    Lesson,
-    Rating,
-    Student,
-    Teacher,
-)
+from school.models import Course, CourseMaterial, Lesson, Rating, Student, Teacher
 
 TEACHERS = [
     {"name": "Noor Fatima", "bio": "Senior Django engineer who loves API performance."},
-    {"name": "Ali Raza", "bio": "Data scientist focused on practical machine learning."},
-    {"name": "Sara Malik", "bio": "Cloud architect helping teams ship scalable backends."},
+    {
+        "name": "Ali Raza",
+        "bio": "Data scientist focused on practical machine learning.",
+    },
+    {
+        "name": "Sara Malik",
+        "bio": "Cloud architect helping teams ship scalable backends.",
+    },
     {"name": "Hamza Khan", "bio": "Frontend mentor with a passion for delightful UX."},
     {"name": "Ayesha Siddiqui", "bio": "DevOps advocate and automation champion."},
 ]
@@ -32,7 +31,11 @@ COURSES = [
     {"title": "UX Research 101", "teacher": "Hamza Khan", "price": "120.00"},
     {"title": "Design Systems", "teacher": "Hamza Khan", "price": "155.00"},
     {"title": "CI/CD Pipelines", "teacher": "Ayesha Siddiqui", "price": "199.00"},
-    {"title": "Observability Deep Dive", "teacher": "Ayesha Siddiqui", "price": "185.00"},
+    {
+        "title": "Observability Deep Dive",
+        "teacher": "Ayesha Siddiqui",
+        "price": "185.00",
+    },
 ]
 
 STUDENT_NAMES = [
@@ -121,7 +124,7 @@ class Command(BaseCommand):
         students = []
         for idx, name in enumerate(STUDENT_NAMES, start=1):
             slug = slugify(name)
-            domain = random.choice(EMAIL_DOMAINS)
+            domain = random.choice(EMAIL_DOMAINS)  # nosec B311
             students.append(
                 Student(
                     name=name,
