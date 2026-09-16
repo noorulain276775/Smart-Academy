@@ -8,10 +8,7 @@ black
 isort
 django-environ
 mysqlclient
-<<<<<<< Updated upstream
-=======
 djangorestframework
 markdown
 django-filter
 pylint-django
->>>>>>> Stashed changes
