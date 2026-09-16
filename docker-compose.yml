@@ -1,12 +1,32 @@
 services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "3307:3306"
+
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+
     ports:
       - "8000:8000"
+
     volumes:
       - .:/app
+
     environment:
       DJANGO_SETTINGS_MODULE: academy.settings
       PYTHONUNBUFFERED: "1"
+
+    depends_on:
+      - db
+
     restart: unless-stopped
