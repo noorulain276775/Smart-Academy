@@ -4,7 +4,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Avg, Count
 
-from .constants import EnrollmentStatus, MaterialType, PaymentStatus
+from school.constants import (
+    EnrollmentStatus,
+    MaterialType,
+    PaymentStatus,
+)
 
 
 class Teacher(models.Model):
